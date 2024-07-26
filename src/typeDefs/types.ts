@@ -767,4 +767,15 @@ export const types = gql`
     cursor: String!
     node: User!
   }
+
+  type ChatsConnection {
+    edges: [ChatEdge]
+    pageInfo: DefaultConnectionPageInfo!
+    totalCount: Int
+  }
+
+  type ChatEdge {
+    cursor: String
+    node: Chats
+  }
 `;

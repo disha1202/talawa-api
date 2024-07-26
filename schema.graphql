@@ -36,6 +36,11 @@ input ActionItemWhereInput {
   is_completed: Boolean
 }
 
+enum Chats {
+  DirectChat
+  GroupChat
+}
+
 enum ActionItemsOrderByInput {
   createdAt_ASC
   createdAt_DESC
@@ -91,6 +96,17 @@ type AdvertisementsConnection {
   edges: [AdvertisementEdge]
   pageInfo: DefaultConnectionPageInfo!
   totalCount: Int
+}
+
+type ChatsConnection {
+  edges: [ChatEdge]
+  pageInfo: DefaultConnectionPageInfo!
+  totalCount: Int
+}
+
+type ChatEdge {
+  cursor: String
+  node: Chats
 }
 
 type AgendaCategory {
@@ -1471,6 +1487,7 @@ type Query {
   directChatsByUserID(id: ID!): [DirectChat]
   directChatsMessagesByChatID(id: ID!): [DirectChatMessage]
   directChatById(id: ID!): DirectChat
+  getChatsByUserId(id: ID!, after: String, before: String, first: PositiveInt, last: PositiveInt): ChatsConnection
   groupChatsByUserId(id: ID!): [GroupChat]
   groupChatById(id: ID!): GroupChat
   event(id: ID!): Event

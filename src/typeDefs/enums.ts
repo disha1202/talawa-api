@@ -387,4 +387,9 @@ export const enums = gql`
     """
     DESCENDING
   }
+
+  enum Chats {
+    DirectChat
+    GroupChat
+  }
 `;

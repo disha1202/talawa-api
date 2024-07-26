@@ -45,6 +45,14 @@ export const queries = gql`
 
     directChatById(id: ID!): DirectChat
 
+    getChatsByUserId(
+      id: ID!
+      after: String
+      before: String
+      first: PositiveInt
+      last: PositiveInt
+    ): ChatsConnection
+
     groupChatById(id: ID!): GroupChat
 
     groupChatsByUserId(id: ID!): [GroupChat]
