@@ -15,8 +15,8 @@ import {
 import { Types } from "mongoose";
 
 interface Chat {
-  _id: Types.ObjectId,
-  chat: string
+  _id: Types.ObjectId;
+  chat: string;
 }
 
 export const getChatsByUserId: QueryResolvers["getChatsByUserId"] = async (
@@ -56,22 +56,22 @@ export const getChatsByUserId: QueryResolvers["getChatsByUserId"] = async (
 
   const [objectList, totalCount] = await Promise.all([
     [
-      ...await DirectChat.find({
+      ...(await DirectChat.find({
         ...filter,
         users: args.id,
       })
         .sort(sort)
         .limit(parsedArgs.limit)
         .lean()
-        .exec(),
-      ...await GroupChat.find({
+        .exec()),
+      ...(await GroupChat.find({
         ...filter,
         users: args.id,
       })
         .sort(sort)
         .limit(parsedArgs.limit)
         .lean()
-        .exec(),
+        .exec()),
     ],
     (await GroupChat.find().countDocuments({ users: args.id }).exec()) +
       (await DirectChat.find({ users: args.id }).countDocuments().exec()),
@@ -79,15 +79,15 @@ export const getChatsByUserId: QueryResolvers["getChatsByUserId"] = async (
 
   console.log("OBJECTLIST", objectList);
 
-  const chats = objectList.sort(function(a,b){
-    return (a.updatedAt) as any - (b.updatedAt as any);
-  }).map(chat =>  { return { _id: chat._id, chat: JSON.stringify(chat)}})
+  const chats = objectList
+    .sort(function (a, b) {
+      return (a.updatedAt as any) - (b.updatedAt as any);
+    })
+    .map((chat) => {
+      return { _id: chat._id, chat: JSON.stringify(chat) };
+    });
 
-  return transformToDefaultGraphQLConnection<
-    ParsedCursor,
-    Chat,
-    Chat
-  >({
+  return transformToDefaultGraphQLConnection<ParsedCursor, Chat, Chat>({
     objectList: chats,
     parsedArgs,
     totalCount,
