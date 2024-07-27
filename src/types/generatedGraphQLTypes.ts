@@ -253,7 +253,7 @@ export type CampaignWhereInput = {
 export type ChatEdge = {
   __typename?: 'ChatEdge';
   cursor?: Maybe<Scalars['String']['output']>;
-  node?: Maybe<Chats>;
+  node?: Maybe<Scalars['JSON']['output']>;
 };
 
 export type Chats =
@@ -3844,7 +3844,7 @@ export type AuthDataResolvers<ContextType = any, ParentType extends ResolversPar
 
 export type ChatEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['ChatEdge'] = ResolversParentTypes['ChatEdge']> = {
   cursor?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  node?: Resolver<Maybe<ResolversTypes['Chats']>, ParentType, ContextType>;
+  node?: Resolver<Maybe<ResolversTypes['JSON']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

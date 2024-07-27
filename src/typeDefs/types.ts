@@ -776,6 +776,6 @@ export const types = gql`
 
   type ChatEdge {
     cursor: String
-    node: Chats
+    node: JSON
   }
 `;

@@ -106,7 +106,7 @@ type ChatsConnection {
 
 type ChatEdge {
   cursor: String
-  node: Chats
+  node: JSON
 }
 
 type AgendaCategory {
