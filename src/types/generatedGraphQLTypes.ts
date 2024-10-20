@@ -12,6 +12,8 @@ import type { InterfaceComment as InterfaceCommentModel } from '../models/Commen
 import type { InterfaceCommunity as InterfaceCommunityModel } from '../models/Community';
 import type { InterfaceChat as InterfaceChatModel } from '../models/Chat';
 import type { InterfaceChatMessage as InterfaceChatMessageModel } from '../models/ChatMessage';
+import type { InterfaceNotificationTemplate as InterfaceNotificationTemplateModel } from '../models/NotificationTemplate';
+import type { InterfaceNotificationLog as InterfaceNotificationLogModel } from '../models/NotificationLog';
 import type { InterfaceDonation as InterfaceDonationModel } from '../models/Donation';
 import type { InterfaceEvent as InterfaceEventModel } from '../models/Event';
 import type { InterfaceEventAttendee as InterfaceEventAttendeeModel } from '../models/EventAttendee';
@@ -2025,6 +2027,34 @@ export type NoteInput = {
   content: Scalars['String']['input'];
 };
 
+export type NotificationLog = {
+  __typename?: 'NotificationLog';
+  _id: Scalars['ID']['output'];
+  createdAt: Scalars['DateTime']['output'];
+  fromOrganizationId?: Maybe<Organization>;
+  fromUserId?: Maybe<User>;
+  linkRouteParams?: Maybe<Scalars['JSON']['output']>;
+  notificationTemplateId?: Maybe<NotificationTemplate>;
+  status?: Maybe<Scalars['String']['output']>;
+  toOrganizationId?: Maybe<Organization>;
+  toUserId?: Maybe<User>;
+  updatedAt: Scalars['DateTime']['output'];
+  variables?: Maybe<Scalars['JSON']['output']>;
+};
+
+export type NotificationTemplate = {
+  __typename?: 'NotificationTemplate';
+  _id: Scalars['ID']['output'];
+  channel?: Maybe<Scalars['String']['output']>;
+  content?: Maybe<Scalars['String']['output']>;
+  createdAt: Scalars['DateTime']['output'];
+  linkRouteName?: Maybe<Scalars['String']['output']>;
+  name?: Maybe<Scalars['String']['output']>;
+  title: Scalars['String']['output'];
+  type?: Maybe<Scalars['String']['output']>;
+  updatedAt: Scalars['DateTime']['output'];
+};
+
 export type OtpInput = {
   email: Scalars['EmailAddress']['input'];
 };
@@ -2814,10 +2844,16 @@ export type Status =
 export type Subscription = {
   __typename?: 'Subscription';
   directMessageChat?: Maybe<MessageChat>;
+  generateNotification?: Maybe<NotificationLog>;
   messageSentToChat?: Maybe<ChatMessage>;
   messageSentToDirectChat?: Maybe<DirectChatMessage>;
   messageSentToGroupChat?: Maybe<GroupChatMessage>;
   onPluginUpdate?: Maybe<Plugin>;
+};
+
+
+export type SubscriptionGenerateNotificationArgs = {
+  userId: Scalars['ID']['input'];
 };
 
 
@@ -3520,6 +3556,8 @@ export type ResolversTypes = {
   Mutation: ResolverTypeWrapper<{}>;
   Note: ResolverTypeWrapper<InterfaceNoteModel>;
   NoteInput: NoteInput;
+  NotificationLog: ResolverTypeWrapper<InterfaceNotificationLogModel>;
+  NotificationTemplate: ResolverTypeWrapper<InterfaceNotificationTemplateModel>;
   OTPInput: OtpInput;
   Organization: ResolverTypeWrapper<InterfaceOrganizationModel>;
   OrganizationCustomField: ResolverTypeWrapper<OrganizationCustomField>;
@@ -3728,6 +3766,8 @@ export type ResolversParentTypes = {
   Mutation: {};
   Note: InterfaceNoteModel;
   NoteInput: NoteInput;
+  NotificationLog: InterfaceNotificationLogModel;
+  NotificationTemplate: InterfaceNotificationTemplateModel;
   OTPInput: OtpInput;
   Organization: InterfaceOrganizationModel;
   OrganizationCustomField: OrganizationCustomField;
@@ -4591,6 +4631,34 @@ export type NoteResolvers<ContextType = any, ParentType extends ResolversParentT
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type NotificationLogResolvers<ContextType = any, ParentType extends ResolversParentTypes['NotificationLog'] = ResolversParentTypes['NotificationLog']> = {
+  _id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  fromOrganizationId?: Resolver<Maybe<ResolversTypes['Organization']>, ParentType, ContextType>;
+  fromUserId?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
+  linkRouteParams?: Resolver<Maybe<ResolversTypes['JSON']>, ParentType, ContextType>;
+  notificationTemplateId?: Resolver<Maybe<ResolversTypes['NotificationTemplate']>, ParentType, ContextType>;
+  status?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  toOrganizationId?: Resolver<Maybe<ResolversTypes['Organization']>, ParentType, ContextType>;
+  toUserId?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  variables?: Resolver<Maybe<ResolversTypes['JSON']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type NotificationTemplateResolvers<ContextType = any, ParentType extends ResolversParentTypes['NotificationTemplate'] = ResolversParentTypes['NotificationTemplate']> = {
+  _id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  channel?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  content?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  linkRouteName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  type?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type OrganizationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Organization'] = ResolversParentTypes['Organization']> = {
   _id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   actionItemCategories?: Resolver<Maybe<Array<Maybe<ResolversTypes['ActionItemCategory']>>>, ParentType, ContextType>;
@@ -4822,6 +4890,7 @@ export type SocialMediaUrlsResolvers<ContextType = any, ParentType extends Resol
 
 export type SubscriptionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = {
   directMessageChat?: SubscriptionResolver<Maybe<ResolversTypes['MessageChat']>, "directMessageChat", ParentType, ContextType>;
+  generateNotification?: SubscriptionResolver<Maybe<ResolversTypes['NotificationLog']>, "generateNotification", ParentType, ContextType, RequireFields<SubscriptionGenerateNotificationArgs, 'userId'>>;
   messageSentToChat?: SubscriptionResolver<Maybe<ResolversTypes['ChatMessage']>, "messageSentToChat", ParentType, ContextType, RequireFields<SubscriptionMessageSentToChatArgs, 'userId'>>;
   messageSentToDirectChat?: SubscriptionResolver<Maybe<ResolversTypes['DirectChatMessage']>, "messageSentToDirectChat", ParentType, ContextType, RequireFields<SubscriptionMessageSentToDirectChatArgs, 'userId'>>;
   messageSentToGroupChat?: SubscriptionResolver<Maybe<ResolversTypes['GroupChatMessage']>, "messageSentToGroupChat", ParentType, ContextType, RequireFields<SubscriptionMessageSentToGroupChatArgs, 'userId'>>;
@@ -5066,6 +5135,8 @@ export type Resolvers<ContextType = any> = {
   MinimumValueError?: MinimumValueErrorResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   Note?: NoteResolvers<ContextType>;
+  NotificationLog?: NotificationLogResolvers<ContextType>;
+  NotificationTemplate?: NotificationTemplateResolvers<ContextType>;
   Organization?: OrganizationResolvers<ContextType>;
   OrganizationCustomField?: OrganizationCustomFieldResolvers<ContextType>;
   OrganizationInfoNode?: OrganizationInfoNodeResolvers<ContextType>;

@@ -197,6 +197,32 @@ type Chat {
   users: [User!]!
 }
 
+type NotificationTemplate {
+  _id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  title: String
+  channel: String
+  content: String
+  type: String
+  name: String
+  linkRouteName: String
+}
+
+type NotificationLog {
+  _id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  toUserId: User
+  fromUserId: User
+  notificationTemplateId: NotificationTemplate
+  toOrganizationId: Organization
+  fromOrganizationId: Organization
+  status: String
+  variables: JSON
+  linkRouteParams: JSON
+}
+
 type ChatMessage {
   _id: ID!
   chatMessageBelongsTo: Chat!
@@ -1669,6 +1695,7 @@ type Subscription {
   messageSentToChat(userId: ID!): ChatMessage
   messageSentToDirectChat(userId: ID!): DirectChatMessage
   messageSentToGroupChat(userId: ID!): GroupChatMessage
+  generateNotification(userId: ID!): NotificationLog
   onPluginUpdate: Plugin
 }
 

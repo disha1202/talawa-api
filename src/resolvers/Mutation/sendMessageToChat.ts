@@ -1,6 +1,6 @@
 import type { MutationResolvers } from "../../types/generatedGraphQLTypes";
 import { errors, requestContext } from "../../libraries";
-import { Chat, User, ChatMessage } from "../../models";
+import { Chat, User, ChatMessage, NotificationLog } from "../../models";
 import { CHAT_NOT_FOUND_ERROR, USER_NOT_FOUND_ERROR } from "../../constants";
 import { uploadEncodedImage } from "../../utilities/encodedImageStorage/uploadEncodedImage";
 import { uploadEncodedVideo } from "../../utilities/encodedVideoStorage/uploadEncodedVideo";
@@ -100,6 +100,41 @@ export const sendMessageToChat: MutationResolvers["sendMessageToChat"] = async (
   context.pubsub.publish("MESSAGE_SENT_TO_CHAT", {
     messageSentToChat: createdChatMessage.toObject(),
   });
+
+  chat.users.map(async (userId) => {
+      const user = await User.findOne({
+        _id: context.userId,
+      }).lean();
+
+      if(userId != context.userId) {
+
+      const notification = await NotificationLog.create({
+        toUserId: userId,
+        fromUserId: context.userId,
+        variables: {
+          userName: user?.firstName + " " + user?.lastName,
+        },
+        notificationTemplateId: "6714f3a03934177cfe890788",
+        createdAt: now,
+        updatedAt: now,
+      });
+
+      console.log('notification', notification)
+      
+      // context.pubsub.publish("GENERATE_NOTIFICATION", {
+      //   generateNotification: notification.toObject(),
+      // });
+      context.pubsub.publish("GENERATE_NOTIFICATION", {
+        generateNotification: notification.toObject(),
+      }).then(() => {
+        console.log("Notification published successfully!");
+      }).catch((error: any) => {
+        console.error("Error publishing notification:", error);
+      });
+    }
+  });
+
+ 
 
   return createdChatMessage.toObject();
 };

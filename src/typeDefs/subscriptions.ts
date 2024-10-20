@@ -7,6 +7,7 @@ export const subscriptions = gql`
     messageSentToDirectChat(userId: ID!): DirectChatMessage
     messageSentToChat(userId: ID!): ChatMessage
     messageSentToGroupChat(userId: ID!): GroupChatMessage
+    generateNotification(userId: ID!): NotificationLog
     onPluginUpdate: Plugin
   }
 `;

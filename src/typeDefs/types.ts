@@ -801,6 +801,32 @@ export const types = gql`
     updatedAt: DateTime!
   }
 
+  type NotificationTemplate {
+  _id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  title: String!
+  channel: String
+  content: String
+  type: String
+  name: String
+  linkRouteName: String
+}
+
+type NotificationLog {
+  _id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  toUserId: User
+  fromUserId: User
+  notificationTemplateId: NotificationTemplate
+  toOrganizationId: Organization
+  fromOrganizationId: Organization
+  status: String
+  variables: JSON
+  linkRouteParams: JSON
+}
+
   input UpdateChatInput {
     _id: ID!
     name: String

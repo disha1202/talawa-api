@@ -38,3 +38,5 @@ export * from "./User";
 export * from "./Note";
 export * from "./Chat";
 export * from "./ChatMessage";
+export * from "./NotificationTemplate";
+export * from "./NotificationLog";
