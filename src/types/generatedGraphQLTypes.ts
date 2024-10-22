@@ -274,6 +274,7 @@ export type Chat = {
   messages?: Maybe<Array<Maybe<ChatMessage>>>;
   name?: Maybe<Scalars['String']['output']>;
   organization?: Maybe<Organization>;
+  unseenMessagesByUsers?: Maybe<Scalars['JSON']['output']>;
   updatedAt: Scalars['DateTime']['output'];
   users: Array<User>;
 };
@@ -1193,6 +1194,7 @@ export type Mutation = {
   likePost?: Maybe<Post>;
   login: AuthData;
   logout: Scalars['Boolean']['output'];
+  markChatMessagesAsRead?: Maybe<Chat>;
   otp: OtpData;
   recaptcha: Scalars['Boolean']['output'];
   refreshToken: ExtendSession;
@@ -1545,6 +1547,12 @@ export type MutationLikePostArgs = {
 
 export type MutationLoginArgs = {
   data: LoginInput;
+};
+
+
+export type MutationMarkChatMessagesAsReadArgs = {
+  chatId: Scalars['ID']['input'];
+  userId: Scalars['ID']['input'];
 };
 
 
@@ -3773,6 +3781,7 @@ export type ChatResolvers<ContextType = any, ParentType extends ResolversParentT
   messages?: Resolver<Maybe<Array<Maybe<ResolversTypes['ChatMessage']>>>, ParentType, ContextType>;
   name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   organization?: Resolver<Maybe<ResolversTypes['Organization']>, ParentType, ContextType>;
+  unseenMessagesByUsers?: Resolver<Maybe<ResolversTypes['JSON']>, ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   users?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -4231,6 +4240,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   likePost?: Resolver<Maybe<ResolversTypes['Post']>, ParentType, ContextType, RequireFields<MutationLikePostArgs, 'id'>>;
   login?: Resolver<ResolversTypes['AuthData'], ParentType, ContextType, RequireFields<MutationLoginArgs, 'data'>>;
   logout?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  markChatMessagesAsRead?: Resolver<Maybe<ResolversTypes['Chat']>, ParentType, ContextType, RequireFields<MutationMarkChatMessagesAsReadArgs, 'chatId' | 'userId'>>;
   otp?: Resolver<ResolversTypes['OtpData'], ParentType, ContextType, RequireFields<MutationOtpArgs, 'data'>>;
   recaptcha?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationRecaptchaArgs, 'data'>>;
   refreshToken?: Resolver<ResolversTypes['ExtendSession'], ParentType, ContextType, RequireFields<MutationRefreshTokenArgs, 'refreshToken'>>;
