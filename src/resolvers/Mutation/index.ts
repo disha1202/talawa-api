@@ -8,7 +8,9 @@ import { addOrganizationImage } from "./addOrganizationImage";
 import { addUserCustomData } from "./addUserCustomData";
 import { addUserImage } from "./addUserImage";
 import { addUserToUserFamily } from "./addUserToUserFamily";
+import { addPeopleToUserTag } from "./addPeopleToUserTag";
 import { assignUserTag } from "./assignUserTag";
+import { assignToUserTags } from "./assignToUserTags";
 import { blockPluginCreationBySuperadmin } from "./blockPluginCreationBySuperadmin";
 import { blockUser } from "./blockUser";
 import { cancelMembershipRequest } from "./cancelMembershipRequest";
@@ -31,7 +33,6 @@ import { createFundraisingCampaign } from "./createFundraisingCampaign";
 import { createEventVolunteerGroup } from "./createEventVolunteerGroup";
 import { createFundraisingCampaignPledge } from "./createFundraisingCampaignPledge";
 import { createMember } from "./createMember";
-import { createMessageChat } from "./createMessageChat";
 import { createOrganization } from "./createOrganization";
 import { createPlugin } from "./createPlugin";
 import { createPost } from "./createPost";
@@ -65,9 +66,7 @@ import { removeComment } from "./removeComment";
 import { removeEvent } from "./removeEvent";
 import { removeEventAttendee } from "./removeEventAttendee";
 import { removeEventVolunteer } from "./removeEventVolunteer";
-import { removeFund } from "./removeFund";
 import { removeEventVolunteerGroup } from "./removeEventVolunteerGroup";
-import { removeFundraisingCampaign } from "./removeFundraisingCampaign";
 import { removeFundraisingCampaignPledge } from "./removeFundraisingCampaingPledge";
 import { removeMember } from "./removeMember";
 import { removeOrganization } from "./removeOrganization";
@@ -80,6 +79,7 @@ import { removeUserFamily } from "./removeUserFamily";
 import { removeUserFromUserFamily } from "./removeUserFromUserFamily";
 import { removeUserImage } from "./removeUserImage";
 import { removeUserTag } from "./removeUserTag";
+import { removeFromUserTags } from "./removeFromUserTags";
 import { resetCommunity } from "./resetCommunity";
 import { revokeRefreshTokenForUser } from "./revokeRefreshTokenForUser";
 import { saveFcmToken } from "./saveFcmToken";
@@ -110,6 +110,7 @@ import { updateLanguage } from "./updateLanguage";
 import { updateOrganization } from "./updateOrganization";
 import { updatePluginStatus } from "./updatePluginStatus";
 import { updatePost } from "./updatePost";
+import { updateSessionTimeout } from "./updateSessionTimeout";
 import { updateUserPassword } from "./updateUserPassword";
 import { updateUserProfile } from "./updateUserProfile";
 import { updateUserRoleInOrganization } from "./updateUserRoleInOrganization";
@@ -131,10 +132,12 @@ export const Mutation: MutationResolvers = {
   addUserCustomData,
   addUserImage,
   addUserToUserFamily,
+  addPeopleToUserTag,
+  assignUserTag,
+  assignToUserTags,
   removeUserFamily,
   removeUserFromUserFamily,
   createUserFamily,
-  assignUserTag,
   blockPluginCreationBySuperadmin,
   blockUser,
   cancelMembershipRequest,
@@ -154,7 +157,6 @@ export const Mutation: MutationResolvers = {
   createEvent,
   createFund,
   createFundraisingCampaign,
-  createMessageChat,
   createOrganization,
   createNote,
   createPlugin,
@@ -192,7 +194,6 @@ export const Mutation: MutationResolvers = {
   removeEvent,
   removeEventAttendee,
   removeEventVolunteer,
-  removeFund,
   removeEventVolunteerGroup,
   removeMember,
   removeOrganization,
@@ -203,6 +204,7 @@ export const Mutation: MutationResolvers = {
   removeUserCustomData,
   removeUserImage,
   removeUserTag,
+  removeFromUserTags,
   resetCommunity,
   revokeRefreshTokenForUser,
   saveFcmToken,
@@ -229,6 +231,7 @@ export const Mutation: MutationResolvers = {
   updateLanguage,
   updateOrganization,
   updatePluginStatus,
+  updateSessionTimeout,
   updateUserProfile,
   updateUserPassword,
   updateUserTag,
@@ -237,7 +240,6 @@ export const Mutation: MutationResolvers = {
   updateFundraisingCampaign,
   updateFundraisingCampaignPledge,
   createFundraisingCampaignPledge,
-  removeFundraisingCampaign,
   removeFundraisingCampaignPledge,
   markChatMessagesAsRead,
   addUserToGroupChat,

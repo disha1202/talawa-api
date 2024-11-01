@@ -75,6 +75,7 @@ export const types = gql`
     actionItemCategory: ActionItemCategory
     preCompletionNotes: String
     postCompletionNotes: String
+    allotedHours: Float
     assignmentDate: Date!
     dueDate: Date!
     completionDate: Date!
@@ -129,6 +130,7 @@ export const types = gql`
     logoUrl: String
     websiteLink: String
     socialMediaUrls: SocialMediaUrls
+    timeout: Int
   }
   type CreateAdminPayload {
     user: AppUserProfile
@@ -163,38 +165,12 @@ export const types = gql`
     userErrors: [CreateCommentError!]!
   }
 
-  type createDirectChatPayload {
-    directChat: DirectChat
-    userErrors: [CreateDirectChatError!]!
-  }
-
   type DeletePayload {
     success: Boolean!
   }
 
   type DeleteAdvertisementPayload {
     advertisement: Advertisement
-  }
-
-  type DirectChat {
-    _id: ID!
-    users: [User!]!
-    messages: [DirectChatMessage]
-    creator: User
-    createdAt: DateTime!
-    updatedAt: DateTime!
-    organization: Organization
-  }
-
-  type DirectChatMessage {
-    _id: ID!
-    directChatMessageBelongsTo: DirectChat!
-    sender: User!
-    receiver: User!
-    replyTo: DirectChatMessage
-    createdAt: DateTime!
-    updatedAt: DateTime!
-    messageContent: String!
   }
 
   type Donation {
@@ -372,27 +348,6 @@ export const types = gql`
     admins: [User!]!
   }
 
-  type GroupChat {
-    _id: ID!
-    title: String!
-    users: [User!]!
-    messages: [GroupChatMessage]
-    creator: User
-    createdAt: DateTime!
-    updatedAt: DateTime!
-    organization: Organization!
-  }
-
-  type GroupChatMessage {
-    _id: ID!
-    groupChatMessageBelongsTo: GroupChat!
-    sender: User!
-    replyTo: GroupChatMessage
-    createdAt: DateTime!
-    updatedAt: DateTime!
-    messageContent: String!
-  }
-
   type Language {
     _id: ID!
     en: String!
@@ -422,16 +377,6 @@ export const types = gql`
     imageUrl: URL
     videoUrl: URL
     creator: User
-  }
-
-  type MessageChat {
-    _id: ID!
-    sender: User!
-    receiver: User!
-    message: String!
-    languageBarrier: Boolean
-    createdAt: DateTime!
-    updatedAt: DateTime!
   }
 
   type Note {
@@ -625,6 +570,7 @@ export const types = gql`
 
   type User {
     _id: ID!
+    identifier: Int!
     appUserProfileId: AppUserProfile
     address: Address
     birthDate: Date
@@ -736,6 +682,17 @@ export const types = gql`
       first: PositiveInt
       last: PositiveInt
     ): UsersConnection
+
+    """
+    A connection field to traverse a list of Users this UserTag is not assigned
+    to, to see and select among them and assign this tag.
+    """
+    usersToAssignTo(
+      after: String
+      before: String
+      first: PositiveInt
+      last: PositiveInt
+    ): UsersConnection
   }
 
   """
@@ -795,37 +752,36 @@ export const types = gql`
     replyTo: ChatMessage
     messageContent: String!
     media: String
-    type: String!
     sender: User!
     deletedBy: [User]
     updatedAt: DateTime!
   }
 
   type NotificationTemplate {
-  _id: ID!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  title: String!
-  channel: String
-  content: String
-  type: String
-  name: String
-  linkRouteName: String
-}
+    _id: ID!
+    createdAt: DateTime!
+    updatedAt: DateTime!
+    title: String!
+    channel: String
+    content: String
+    type: String
+    name: String
+    linkRouteName: String
+  }
 
-type NotificationLog {
-  _id: ID!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  toUserId: User
-  fromUserId: User
-  notificationTemplateId: NotificationTemplate
-  toOrganizationId: Organization
-  fromOrganizationId: Organization
-  status: String
-  variables: JSON
-  linkRouteParams: JSON
-}
+  type NotificationLog {
+    _id: ID!
+    createdAt: DateTime!
+    updatedAt: DateTime!
+    toUserId: User
+    fromUserId: User
+    notificationTemplateId: NotificationTemplate
+    toOrganizationId: Organization
+    fromOrganizationId: Organization
+    status: String
+    variables: JSON
+    linkRouteParams: JSON
+  }
 
   input UpdateChatInput {
     _id: ID!

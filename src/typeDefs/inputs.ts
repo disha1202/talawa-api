@@ -24,12 +24,6 @@ export const inputs = gql`
     image: String
   }
 
-  input createGroupChatInput {
-    userIds: [ID!]!
-    organizationId: ID!
-    title: String!
-  }
-
   input ChatWhereInput {
     user: UserWhereInput
     name_contains: String
@@ -50,6 +44,7 @@ export const inputs = gql`
   input CreateActionItemInput {
     assigneeId: ID!
     preCompletionNotes: String
+    allotedHours: Float
     dueDate: Date
     eventId: ID
   }
@@ -82,8 +77,14 @@ export const inputs = gql`
   input ActionItemWhereInput {
     actionItemCategory_id: ID
     event_id: ID
-    is_active: Boolean
+    categoryName: String
+    assigneeName: String
     is_completed: Boolean
+  }
+
+  input ActionItemCategoryWhereInput {
+    name_contains: String
+    is_disabled: Boolean
   }
 
   input CreateAgendaCategoryInput {
@@ -286,11 +287,11 @@ export const inputs = gql`
     id_starts_with: ID
 
     user: UserWhereInput
-  }
 
-  input MessageChatInput {
-    message: String!
-    receiver: ID!
+    creatorId: ID
+    creatorId_not: ID
+    creatorId_in: [ID!]
+    creatorId_not_in: [ID!]
   }
 
   input NoteInput {
@@ -426,12 +427,23 @@ export const inputs = gql`
     tagId: ID!
   }
 
+  input AddPeopleToUserTagInput {
+    userIds: [ID!]!
+    tagId: ID!
+  }
+
+  input TagActionsInput {
+    currentTagId: ID!
+    selectedTagIds: [ID!]!
+  }
+
   input UpdateActionItemInput {
     assigneeId: ID
     preCompletionNotes: String
     postCompletionNotes: String
     dueDate: Date
     completionDate: Date
+    allotedHours: Float
     isCompleted: Boolean
   }
 

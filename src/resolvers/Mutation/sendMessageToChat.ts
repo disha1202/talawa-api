@@ -47,23 +47,22 @@ export const sendMessageToChat: MutationResolvers["sendMessageToChat"] = async (
 
   let mediaFile = null;
 
-    if (args.media) {
-      const dataUrlPrefix = "data:";
-      if (args.media.startsWith(dataUrlPrefix + "image/")) {
-        mediaFile = await uploadEncodedImage(args.media, null);
-      } else if (args.media.startsWith(dataUrlPrefix + "video/")) {
-        mediaFile = await uploadEncodedVideo(args.media, null);
-      } else {
-        throw new Error("Unsupported file type.");
-      }
+  if (args.media) {
+    const dataUrlPrefix = "data:";
+    if (args.media.startsWith(dataUrlPrefix + "image/")) {
+      mediaFile = await uploadEncodedImage(args.media, null);
+    } else if (args.media.startsWith(dataUrlPrefix + "video/")) {
+      mediaFile = await uploadEncodedVideo(args.media, null);
+    } else {
+      throw new Error("Unsupported file type.");
     }
+  }
 
   const createdChatMessage = await ChatMessage.create({
     chatMessageBelongsTo: chat._id,
     sender: context.userId,
     messageContent: args.messageContent,
     media: mediaFile,
-    type: args.type,
     replyTo: args.replyTo,
     createdAt: now,
     updatedAt: now,
@@ -102,12 +101,11 @@ export const sendMessageToChat: MutationResolvers["sendMessageToChat"] = async (
   });
 
   chat.users.map(async (userId) => {
-      const user = await User.findOne({
-        _id: context.userId,
-      }).lean();
+    const user = await User.findOne({
+      _id: context.userId,
+    }).lean();
 
-      if(userId != context.userId) {
-
+    if (userId != context.userId) {
       const notification = await NotificationLog.create({
         toUserId: userId,
         fromUserId: context.userId,
@@ -119,22 +117,18 @@ export const sendMessageToChat: MutationResolvers["sendMessageToChat"] = async (
         updatedAt: now,
       });
 
-      console.log('notification', notification)
-      
-      // context.pubsub.publish("GENERATE_NOTIFICATION", {
-      //   generateNotification: notification.toObject(),
-      // });
-      context.pubsub.publish("GENERATE_NOTIFICATION", {
-        generateNotification: notification.toObject(),
-      }).then(() => {
-        console.log("Notification published successfully!");
-      }).catch((error: any) => {
-        console.error("Error publishing notification:", error);
-      });
+      context.pubsub
+        .publish("GENERATE_NOTIFICATION", {
+          generateNotification: notification.toObject(),
+        })
+        .then(() => {
+          console.log("Notification published successfully!");
+        })
+        .catch((error: string) => {
+          console.error("Error publishing notification:", error);
+        });
     }
   });
-
- 
 
   return createdChatMessage.toObject();
 };

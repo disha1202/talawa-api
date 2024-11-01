@@ -1,5 +1,4 @@
 import type { CodegenConfig } from "@graphql-codegen/cli";
-import { NotificationTemplate } from "./src/models";
 
 const config: CodegenConfig = {
   // Points to our schema and the additional scalar Upload which is added by Apollo-Server at runtime
@@ -41,8 +40,6 @@ const config: CodegenConfig = {
 
           CheckIn: "../models/CheckIn#InterfaceCheckIn",
 
-          MessageChat: "../models/MessageChat#InterfaceMessageChat",
-
           Comment: "../models/Comment#InterfaceComment",
 
           Community: "../models/Community#InterfaceCommunity",
@@ -51,7 +48,8 @@ const config: CodegenConfig = {
 
           ChatMessage: "../models/ChatMessage#InterfaceChatMessage",
 
-          NotificationTemplate: "../models/NotificationTemplate#InterfaceNotificationTemplate",
+          NotificationTemplate:
+            "../models/NotificationTemplate#InterfaceNotificationTemplate",
 
           NotificationLog: "../models/NotificationLog#InterfaceNotificationLog",
 

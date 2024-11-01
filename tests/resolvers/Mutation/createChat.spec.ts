@@ -29,7 +29,6 @@ let MONGOOSE_INSTANCE: typeof mongoose;
 beforeAll(async () => {
   MONGOOSE_INSTANCE = await connect();
   const resultsArray = await createTestUserAndOrganization();
-
   testUser = resultsArray[0];
   testOrganization = resultsArray[1];
 });
@@ -81,7 +80,7 @@ describe("resolvers -> Mutation -> createChat", () => {
     try {
       const args: MutationCreateChatArgs = {
         data: {
-          organizationId: testOrganization?.id,
+          organizationId: testOrganization?._id,
           userIds: [new Types.ObjectId().toString()],
           isGroup: true,
         },
@@ -100,12 +99,12 @@ describe("resolvers -> Mutation -> createChat", () => {
       expect((error as Error).message).toEqual(USER_NOT_FOUND_ERROR.MESSAGE);
     }
   });
-  it(`creates the directChat and returns it`, async () => {
+  it(`creates the chat and returns it`, async () => {
     const args: MutationCreateChatArgs = {
       data: {
         organizationId: testOrganization?.id,
         userIds: [testUser?.id],
-        isGroup: true,
+        isGroup: false,
       },
     };
 
@@ -126,7 +125,7 @@ describe("resolvers -> Mutation -> createChat", () => {
     );
   });
 
-  it(`creates the groupChat and returns it`, async () => {
+  it(`creates the chat and returns it`, async () => {
     const args: MutationCreateChatArgs = {
       data: {
         organizationId: testOrganization?.id,

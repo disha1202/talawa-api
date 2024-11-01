@@ -72,13 +72,13 @@ afterAll(async () => {
   await disconnect(MONGOOSE_INSTANCE);
 });
 
-describe("resolvers -> Mutation -> sendMessageToDirectChat", () => {
+describe("resolvers -> Mutation -> sendMessageToChat", () => {
   afterEach(async () => {
     vi.doUnmock("../../../src/constants");
     vi.resetModules();
   });
 
-  it(`throws NotFoundError if no directChat exists with _id === args.chatId`, async () => {
+  it(`throws NotFoundError if no chat exists with _id === args.chatId`, async () => {
     const { requestContext } = await import("../../../src/libraries");
     const spy = vi
       .spyOn(requestContext, "translate")
@@ -87,7 +87,6 @@ describe("resolvers -> Mutation -> sendMessageToDirectChat", () => {
       const args: MutationSendMessageToChatArgs = {
         chatId: new Types.ObjectId().toString(),
         messageContent: "",
-        type: "STRING",
       };
 
       const context = { userId: testUsers[0]?.id };
@@ -112,7 +111,6 @@ describe("resolvers -> Mutation -> sendMessageToDirectChat", () => {
       const args: MutationSendMessageToChatArgs = {
         chatId: testChat.id,
         messageContent: "",
-        type: "STRING",
       };
 
       const context = {
@@ -130,7 +128,7 @@ describe("resolvers -> Mutation -> sendMessageToDirectChat", () => {
     }
   });
 
-  it(`creates the directChatMessage and returns it`, async () => {
+  it(`creates the chatMessage and returns it`, async () => {
     await Chat.updateOne(
       {
         _id: testChat._id,
@@ -145,7 +143,6 @@ describe("resolvers -> Mutation -> sendMessageToDirectChat", () => {
     const args: MutationSendMessageToChatArgs = {
       chatId: testChat.id,
       messageContent: "messageContent",
-      type: "STRING",
     };
 
     const pubsub = {

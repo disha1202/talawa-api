@@ -37,7 +37,5 @@ export const chatById: QueryResolvers["chatById"] = async (
     return message;
   });
 
-  console.log("CHAT BY ID ", chat.messages)
-
   return chat;
 };

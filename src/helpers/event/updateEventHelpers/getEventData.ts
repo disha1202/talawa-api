@@ -31,6 +31,7 @@ export const getEventData = (
     longitude: event.longitude,
     creatorId: event.creatorId,
     organizationId: event.organization,
+    createChat: event.chat ? true : false,
   };
 
   // Step 2: Update the current data with the input data (if provided).
