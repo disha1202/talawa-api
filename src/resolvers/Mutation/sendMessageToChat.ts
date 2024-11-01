@@ -4,6 +4,8 @@ import { Chat, User, ChatMessage } from "../../models";
 import { CHAT_NOT_FOUND_ERROR, USER_NOT_FOUND_ERROR } from "../../constants";
 import { uploadEncodedImage } from "../../utilities/encodedImageStorage/uploadEncodedImage";
 import { uploadEncodedVideo } from "../../utilities/encodedVideoStorage/uploadEncodedVideo";
+import * as cryptolib from "crypto";
+
 /**
  * This function enables to send message to chat.
  * @param _parent - parent of current request
@@ -58,10 +60,29 @@ export const sendMessageToChat: MutationResolvers["sendMessageToChat"] = async (
     }
   }
 
+  if (!process.env.ENCRYPTION_KEY) {
+    throw new Error("ENCRYPTION_KEY is not defined in environment variables.");
+  }
+  const key = Buffer.from(process.env.ENCRYPTION_KEY, "hex");
+  if (!process.env.ENCRYPTION_IV) {
+    throw new Error("ENCRYPTION_IV is not defined in environment variables.");
+  }
+  const iv = Buffer.from(process.env.ENCRYPTION_IV, "hex");
+
+  let encryptedMessage = "";
+
+  // Encrypt message content if present
+  if (args.messageContent) {
+    const cipher = cryptolib.createCipheriv("aes-256-cbc", key, iv);
+    let encrypted = cipher.update(args.messageContent, "utf8", "hex");
+    encrypted += cipher.final("hex");
+    encryptedMessage = `${iv.toString("hex")}:${encrypted}`;
+  }
+
   const createdChatMessage = await ChatMessage.create({
     chatMessageBelongsTo: chat._id,
     sender: context.userId,
-    messageContent: args.messageContent,
+    messageContent: encryptedMessage,
     media: mediaFile,
     replyTo: args.replyTo,
     createdAt: now,
@@ -99,5 +120,8 @@ export const sendMessageToChat: MutationResolvers["sendMessageToChat"] = async (
     messageSentToChat: createdChatMessage.toObject(),
   });
 
-  return createdChatMessage.toObject();
+  return {
+    ...createdChatMessage.toObject(),
+    messageContent: args.messageContent || "",
+  };
 };
