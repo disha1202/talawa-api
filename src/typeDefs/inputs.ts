@@ -24,10 +24,9 @@ export const inputs = gql`
     image: String
   }
 
-  input createGroupChatInput {
-    userIds: [ID!]!
-    organizationId: ID!
-    title: String!
+  input ChatWhereInput {
+    user: UserWhereInput
+    name_contains: String
   }
 
   input createUserFamilyInput {
@@ -147,6 +146,7 @@ export const inputs = gql`
     latitude: Latitude
     longitude: Longitude
     organizationId: ID!
+    createChat: Boolean!
   }
 
   input EventVolunteerInput {
@@ -292,11 +292,6 @@ export const inputs = gql`
     creatorId_not: ID
     creatorId_in: [ID!]
     creatorId_not_in: [ID!]
-  }
-
-  input MessageChatInput {
-    message: String!
-    receiver: ID!
   }
 
   input NoteInput {

@@ -63,6 +63,7 @@ export const createRecurringEventInstancesDuringQuery = async (
       const currentInputData: InterfaceRecurringEvent = {
         ...data,
         organizationId: recurrenceRule.organizationId.toString(),
+        createChat: false,
       };
 
       // Extract properties from the recurrence rule

@@ -40,8 +40,6 @@ const config: CodegenConfig = {
 
           CheckIn: "../models/CheckIn#InterfaceCheckIn",
 
-          MessageChat: "../models/MessageChat#InterfaceMessageChat",
-
           Comment: "../models/Comment#InterfaceComment",
 
           Community: "../models/Community#InterfaceCommunity",
@@ -49,6 +47,11 @@ const config: CodegenConfig = {
           Chat: "../models/Chat#InterfaceChat",
 
           ChatMessage: "../models/ChatMessage#InterfaceChatMessage",
+
+          NotificationTemplate:
+            "../models/NotificationTemplate#InterfaceNotificationTemplate",
+
+          NotificationLog: "../models/NotificationLog#InterfaceNotificationLog",
 
           Donation: "../models/Donation#InterfaceDonation",
 

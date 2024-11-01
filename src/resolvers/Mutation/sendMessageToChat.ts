@@ -1,7 +1,9 @@
 import type { MutationResolvers } from "../../types/generatedGraphQLTypes";
 import { errors, requestContext } from "../../libraries";
-import { Chat, User, ChatMessage } from "../../models";
+import { Chat, User, ChatMessage, NotificationLog } from "../../models";
 import { CHAT_NOT_FOUND_ERROR, USER_NOT_FOUND_ERROR } from "../../constants";
+import { uploadEncodedImage } from "../../utilities/encodedImageStorage/uploadEncodedImage";
+import { uploadEncodedVideo } from "../../utilities/encodedVideoStorage/uploadEncodedVideo";
 /**
  * This function enables to send message to chat.
  * @param _parent - parent of current request
@@ -43,13 +45,38 @@ export const sendMessageToChat: MutationResolvers["sendMessageToChat"] = async (
 
   const now = new Date();
 
+  let mediaFile = null;
+
+  if (args.media) {
+    const dataUrlPrefix = "data:";
+    if (args.media.startsWith(dataUrlPrefix + "image/")) {
+      mediaFile = await uploadEncodedImage(args.media, null);
+    } else if (args.media.startsWith(dataUrlPrefix + "video/")) {
+      mediaFile = await uploadEncodedVideo(args.media, null);
+    } else {
+      throw new Error("Unsupported file type.");
+    }
+  }
+
   const createdChatMessage = await ChatMessage.create({
     chatMessageBelongsTo: chat._id,
     sender: context.userId,
     messageContent: args.messageContent,
+    media: mediaFile,
     replyTo: args.replyTo,
     createdAt: now,
     updatedAt: now,
+  });
+
+  const unseenMessagesByUsers = JSON.parse(
+    chat.unseenMessagesByUsers as unknown as string,
+  );
+
+  Object.keys(unseenMessagesByUsers).map((user: string) => {
+    if (user !== context.userId) {
+      console.log("user", user, context.userId);
+      unseenMessagesByUsers[user] += 1;
+    }
   });
 
   // add createdDirectChatMessage to directChat
@@ -61,12 +88,46 @@ export const sendMessageToChat: MutationResolvers["sendMessageToChat"] = async (
       $push: {
         messages: createdChatMessage._id,
       },
+      $set: {
+        unseenMessagesByUsers: JSON.stringify(unseenMessagesByUsers),
+        updatedAt: now,
+      },
     },
   );
 
   // calls subscription
   context.pubsub.publish("MESSAGE_SENT_TO_CHAT", {
     messageSentToChat: createdChatMessage.toObject(),
+  });
+
+  chat.users.map(async (userId) => {
+    const user = await User.findOne({
+      _id: context.userId,
+    }).lean();
+
+    if (userId != context.userId) {
+      const notification = await NotificationLog.create({
+        toUserId: userId,
+        fromUserId: context.userId,
+        variables: {
+          userName: user?.firstName + " " + user?.lastName,
+        },
+        notificationTemplateId: "6714f3a03934177cfe890788",
+        createdAt: now,
+        updatedAt: now,
+      });
+
+      context.pubsub
+        .publish("GENERATE_NOTIFICATION", {
+          generateNotification: notification.toObject(),
+        })
+        .then(() => {
+          console.log("Notification published successfully!");
+        })
+        .catch((error: string) => {
+          console.error("Error publishing notification:", error);
+        });
+    }
   });
 
   return createdChatMessage.toObject();

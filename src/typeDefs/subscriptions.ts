@@ -4,6 +4,7 @@ import { gql } from "graphql-tag";
 export const subscriptions = gql`
   type Subscription {
     messageSentToChat(userId: ID!): ChatMessage
+    generateNotification(userId: ID!): NotificationLog
     onPluginUpdate: Plugin
   }
 `;

@@ -13,6 +13,7 @@ export interface InterfaceChatMessage {
   sender: PopulatedDoc<InterfaceUser & Document>;
   replyTo: PopulatedDoc<InterfaceChatMessage & Document>;
   messageContent: string;
+  media: string;
   status: string;
   deletedBy: PopulatedDoc<InterfaceUser & Document>[];
   createdAt: Date;
@@ -66,7 +67,11 @@ const chatMessageSchema = new Schema(
     },
     messageContent: {
       type: String,
-      required: true,
+      required: false,
+    },
+    media: {
+      type: String,
+      required: false,
     },
     status: {
       type: String,
@@ -96,10 +101,10 @@ const chatMessageSchema = new Schema(
 );
 
 // Apply logging middleware to the schema
-createLoggingMiddleware(chatMessageSchema, "DirectChatMessage");
+createLoggingMiddleware(chatMessageSchema, "ChatMessage");
 
 /**
- * Returns the Mongoose Model for DirectChatMessage to prevent OverwriteModelError.
+ * Returns the Mongoose Model for ChatMessage to prevent OverwriteModelError.
  */
 const chatMessageModel = (): Model<InterfaceChatMessage> =>
   model<InterfaceChatMessage>("ChatMessage", chatMessageSchema);
