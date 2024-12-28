@@ -1,5 +1,7 @@
 import type { PopulatedDoc, Types, Document, Model } from "mongoose";
-import { Schema, model, models } from "mongoose";
+import mongoose from "mongoose";
+// eslint-disable-next-line @typescript-eslint/naming-convention
+const { Schema, model, models } = mongoose;
 import type { InterfaceOrganization } from "./Organization";
 import type { InterfaceUser } from "./User";
 import { createLoggingMiddleware } from "../libraries/dbLogger";
@@ -20,6 +22,7 @@ export interface InterfaceChat {
   createdAt: Date;
   updatedAt: Date;
   lastMessageId: string;
+  unseenMessagesByUsers: JSON;
 }
 
 /**
@@ -98,9 +101,13 @@ const chatSchema = new Schema(
       type: String,
       required: false,
     },
+    unseenMessagesByUsers: {
+      type: JSON,
+      required: true,
+    },
   },
   {
-    timestamps: true,
+    timestamps: false,
   },
 );
 
